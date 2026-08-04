@@ -1,0 +1,276 @@
+[
+  {
+    "question": "What is the minimum GPA requirement?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "Which programming languages are mentioned for candidates?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "How long is the Graduate Talent Program?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 1
+      }
+    ]
+  },
+  {
+    "question": "When should the candidate graduate?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What degree qualification is required?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What AI experience does UBS expect from candidates?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What values should candidates have?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "Where is the Tech Graduate role located?",
+    "expected_chunks": [
+    {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 0
+    }
+    ]
+    },
+  {
+    "question": "What business unit offers the Graduate Talent Program?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 1
+      }
+    ]
+  },
+  {
+    "question": "What activities will candidates perform in the program?",
+    "expected_chunks": [
+      {
+        "filename": "UBS_GTP_2027.pdf",
+        "chunk_number": 1
+      }
+    ]
+  },
+
+
+  {
+    "question": "Where does AI come into the smart learning idea?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What does the AI chatbot do?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "How does personalized learning help students?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What does Smart Quiz create?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "Who benefits from the smart learning app?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "How do students benefit from the learning app?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "How do teachers benefit from this application?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "How do parents benefit from the smart learning system?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What problem does the smart learning app solve?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "Why do students find learning difficult?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+
+
+  {
+    "question": "Who is affected by the learning problem?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "Why does this education problem exist?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What app idea is proposed?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "How will the smart learning app work?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What steps does a student follow in the app?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "How will we know the learning app is successful?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What improvements should students see after using the app?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "Who helps create the smart learning idea?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "Which organizations are involved in the smart learning solution?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  },
+  {
+    "question": "What is the main goal of Digital India and Smart Learning?",
+    "expected_chunks": [
+      {
+        "filename": "Blue Simple Geometric Page Border A4.pdf",
+        "chunk_number": 0
+      }
+    ]
+  }
+]
