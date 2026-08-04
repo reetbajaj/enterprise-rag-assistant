@@ -20,6 +20,7 @@ from app.database.dependency import get_db
 from app.database.models import Document
 
 import os
+import logging
 
 router = APIRouter()
 
@@ -108,9 +109,9 @@ async def upload_pdf(
 
     db.refresh(document)
 
-    logger.info(
-        f"Document uploaded: {file.filename}, user={current_user.id}"
-    )
+    logging.info(
+    f"Indexed {file.filename} with {len(chunks)} chunks"
+)
 
     return {
         "message": "Document indexed successfully",
