@@ -30,12 +30,16 @@ def store_embeddings(
     documents = []
 
     for i, chunk in enumerate(chunks):
+        content_type = str(chunk.get("content_type") or chunk.get("chunk_type") or "text")
+        source_type = str(chunk.get("source_type") or "pdf_text")
         metadata = {
             "document_id": str(document_id),
             "filename": str(filename),
             "page_number": int(chunk.get("page_number", 1)),
             "chunk_number": int(i),
             "user_id": int(user_id),
+            "content_type": content_type,
+            "source_type": source_type,
             "chunk_type": str(chunk.get("chunk_type", "text") or "text"),
             "heading": str(chunk.get("heading") or ""),
             "has_images": str(chunk.get("has_images", False))
@@ -54,7 +58,7 @@ def store_embeddings(
         embeddings=embedding_list,
         metadatas=metadatas
     )
-    logging.info(f"Stored {len(chunks)} chunks for doc {document_id} (user={user_id})")
+    logging.info(f"Stored {len(chunks)} multimodal chunks for doc {document_id} (user={user_id})")
 
 
 def document_exists(document_id: str, user_id: int) -> bool:

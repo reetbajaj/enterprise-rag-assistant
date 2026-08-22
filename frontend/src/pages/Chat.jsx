@@ -911,6 +911,22 @@ function Chat() {
                                     }}>
                                       Page {src.page_number}
                                     </span>
+                                    {src.content_type && src.content_type !== "text" && (
+                                      <span style={{
+                                        padding: "1px 6px",
+                                        borderRadius: "4px",
+                                        backgroundColor: src.content_type === "table" ? "rgba(6, 182, 212, 0.15)" : src.content_type === "diagram" ? "rgba(168, 85, 247, 0.15)" : "rgba(245, 158, 11, 0.15)",
+                                        border: `1px solid ${src.content_type === "table" ? "rgba(6, 182, 212, 0.3)" : src.content_type === "diagram" ? "rgba(168, 85, 247, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
+                                        color: src.content_type === "table" ? "#22D3EE" : src.content_type === "diagram" ? "#C084FC" : "#FBBF24",
+                                        fontSize: "0.65rem",
+                                        fontWeight: "600",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.03em",
+                                        flexShrink: 0,
+                                      }}>
+                                        {src.content_type}
+                                      </span>
+                                    )}
                                   </div>
                                   {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                                 </div>
