@@ -1,60 +1,101 @@
 import chromadb
+import logging
+from typing import List, Dict, Any
 
-client = chromadb.PersistentClient(path="chroma_db")
+client = chromadb.PersistentClient(
+    path="chroma_db"
+)
 
 collection = client.get_or_create_collection(
     name="documents"
 )
 
-def store_embeddings(
-    document_id,
-    filename,
-    chunks,
-    embeddings,
-    user_id
-):
 
+def store_embeddings(
+    document_id: str,
+    filename: str,
+    chunks: List[Dict[str, Any]],
+    embeddings: Any,
+    user_id: int
+):
+    if not chunks:
+        return
 
     ids = [
-        f"{document_id}_chunk_{i}"
+        f"u{user_id}_{document_id}_chunk_{i}"
         for i in range(len(chunks))
     ]
 
+    metadatas = []
+    documents = []
 
-    metadatas = [
-        {
-            "document_id": document_id,
-            "filename": filename,
-            "page_number": chunk["page_number"],
-            "chunk_number": i,
-            "user_id": user_id
+    for i, chunk in enumerate(chunks):
+        metadata = {
+            "document_id": str(document_id),
+            "filename": str(filename),
+            "page_number": int(chunk.get("page_number", 1)),
+            "chunk_number": int(i),
+            "user_id": int(user_id),
+            "chunk_type": str(chunk.get("chunk_type", "text") or "text"),
+            "heading": str(chunk.get("heading") or ""),
+            "has_images": str(chunk.get("has_images", False))
         }
-        for i, chunk in enumerate(chunks)
+        metadatas.append(metadata)
+        documents.append(chunk["text"])
+
+    embedding_list = [
+        emb.tolist() if hasattr(emb, "tolist") else list(emb)
+        for emb in embeddings
     ]
 
-
-    collection.add(
+    collection.upsert(
         ids=ids,
-        documents=[
-            chunk["text"]
-            for chunk in chunks
-        ],
-        embeddings=embeddings,
+        documents=documents,
+        embeddings=embedding_list,
         metadatas=metadatas
     )
+    logging.info(f"Stored {len(chunks)} chunks for doc {document_id} (user={user_id})")
 
 
-def document_exists(document_id):
-    result = collection.get(
-        where={"document_id": document_id}
-    )
+def document_exists(document_id: str, user_id: int) -> bool:
+    try:
+        result = collection.get(
+            where={
+                "$and": [
+                    {"document_id": str(document_id)},
+                    {"user_id": int(user_id)}
+                ]
+            },
+            limit=1
+        )
+        return bool(result and result.get("ids") and len(result["ids"]) > 0)
+    except Exception as e:
+        logging.warning(f"Error checking document existence in Chroma: {e}")
+        return False
 
-    return len(result["ids"]) > 0
 
-def delete_document(document_id):
+def delete_document(document_id: str, user_id: int):
+    try:
+        collection.delete(
+            where={
+                "$and": [
+                    {"document_id": str(document_id)},
+                    {"user_id": int(user_id)}
+                ]
+            }
+        )
+        logging.info(f"Deleted chunks for doc {document_id} (user={user_id})")
+    except Exception as e:
+        logging.error(f"Failed to delete document {document_id} from vector store: {e}")
+        raise e
 
-    collection.delete(
-        where={
-            "document_id": document_id
-        }
-    )
+
+def count_user_chunks(user_id: int) -> int:
+    try:
+        result = collection.get(
+            where={"user_id": int(user_id)},
+            include=[]
+        )
+        return len(result.get("ids", []))
+    except Exception:
+        return 0

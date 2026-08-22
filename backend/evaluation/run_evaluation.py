@@ -43,7 +43,8 @@ def evaluate():
         print(question)
 
 
-        result = answer_question(question)
+        user_id = item.get("user_id", 1)
+        result = answer_question(question, user_id=user_id)
 
 
         print("\nAnswer:")

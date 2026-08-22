@@ -1,44 +1,46 @@
-# Python
 venv/
+env/
+.venv/
 __pycache__/
 *.pyc
+*.pyo
 
 # Database
 *.db
+*.sqlite
+*.sqlite3
 
-# Environment
+# Environment / secrets
 .env
+.env.*
+!.env.example
 
 # Chroma
 chroma_db/
+chroma/
+.chroma/
 
 # Uploads
 backend/app/uploads/
+backend/uploads/
+
+# macOS
+.DS_Store
 
 # Node
 frontend/node_modules/
 frontend/dist/
 
+# IDE
+.vscode/
+.idea/
+
 # Logs
-logs/
 *.log
 
-# Evaluation output
+# Python testing/cache
+.pytest_cache/
+
+# Generated evaluation reports
 backend/evaluation/report.json
 
-# Environment
-.env
-
-# Database
-*.db
-
-# Chroma
-chroma_db/
-
-# Uploads
-backend/app/uploads/
-
-# Python
-__pycache__/
-*.pyc
-venv/

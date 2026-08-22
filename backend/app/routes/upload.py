@@ -1,121 +1,94 @@
-from fastapi import APIRouter, UploadFile, File, Depends,HTTPException
-
-from app.services.pdf_service import extract_pages
-from app.services.chunk_service import chunk_pages
-from app.services.embedding_service import generate_embeddings
-from app.auth.dependency import get_current_user
-from app.database.models import User
-from app.core.logging_config import logger
-
-from app.services.vector_store import (
-    store_embeddings,
-    document_exists
-)
-
-from app.services.hash_service import generate_document_id
-
-from sqlalchemy.orm import Session
-
-from app.database.dependency import get_db
-from app.database.models import Document
-
 import os
 import logging
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException, BackgroundTasks, status
+from sqlalchemy.orm import Session
+
+from app.auth.dependency import get_current_user
+from app.database.dependency import get_db
+from app.database.models import User, Document
+from app.services.hash_service import generate_document_id
+from app.services.document_service import process_pdf_background
 
 router = APIRouter()
 
 UPLOAD_DIR = "app/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50 MB limit
 
 
-@router.post("/upload")
+@router.post("/upload", status_code=status.HTTP_202_ACCEPTED)
 async def upload_pdf(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Check file type
-    if not file.filename.endswith(".pdf"):
+    # 1. Validate file extension
+    raw_filename = file.filename or "document.pdf"
+    if not raw_filename.lower().endswith(".pdf"):
         raise HTTPException(
-            status_code=400,
-            detail="Only PDF files are allowed"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only PDF (.pdf) files are supported"
         )
 
-    # Save uploaded PDF
-    file_path = os.path.join(UPLOAD_DIR, file.filename)
+    # 2. Sanitize filename against directory traversal
+    safe_filename = os.path.basename(raw_filename).replace("..", "").strip()
+    if not safe_filename:
+        safe_filename = "uploaded_document.pdf"
 
+    # 3. Create user-specific upload directory
+    user_dir = os.path.join(UPLOAD_DIR, f"user_{current_user.id}")
+    os.makedirs(user_dir, exist_ok=True)
+
+    # 4. Read file content and check size
+    content = await file.read()
+    file_size = len(content)
+    if file_size == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded file is empty (0 bytes)"
+        )
+    if file_size > MAX_FILE_SIZE_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail="File size exceeds maximum allowed limit (50MB)"
+        )
+
+    file_path = os.path.join(user_dir, safe_filename)
     with open(file_path, "wb") as buffer:
-        buffer.write(await file.read())
+        buffer.write(content)
 
-    # Generate unique document id
-    document_id = generate_document_id(file_path)
+    # 5. Generate unique user-scoped document ID
+    document_id = generate_document_id(file_path, user_id=current_user.id)
 
-    # Check if already indexed
-    if document_exists(document_id):
-        return {
-            "message": "Document already indexed",
-            "document_id": document_id
-        }
-
-    # Extract text
-    pages = extract_pages(file_path)
-
-
-
-    # Chunk text
-    chunks = chunk_pages(pages)
-
-    if not chunks:
-        raise HTTPException(
-            status_code=400,
-            detail="No readable text found in PDF"
-        )
-    
-    texts = [
-        chunk["text"]
-        for chunk in chunks
-    ]
-    if not texts:
-        raise HTTPException(
-            status_code=400,
-            detail="PDF contains no extractable text"
-        )
-
-    # Generate embeddings
-    embeddings = generate_embeddings(texts)
-
-    # Store embeddings in ChromaDB
-    store_embeddings(
+    # 6. Create initial database record with status="processing"
+    doc_record = Document(
         document_id=document_id,
-        filename=file.filename,
-        chunks=chunks,
-        embeddings=embeddings,
+        filename=safe_filename,
+        file_size=file_size,
+        chunks=0,
+        status="processing",
         user_id=current_user.id
+    )
+    db.add(doc_record)
+    db.commit()
+    db.refresh(doc_record)
 
-        )
-
-    document = Document(
+    # 7. Queue background processing task
+    background_tasks.add_task(
+        process_pdf_background,
         document_id=document_id,
-        filename=file.filename,
-        chunks=len(chunks),
-        status="completed",
+        file_path=file_path,
+        filename=safe_filename,
         user_id=current_user.id
     )
 
-
-    db.add(document)
-
-    db.commit()
-
-    db.refresh(document)
-
-    logging.info(
-    f"Indexed {file.filename} with {len(chunks)} chunks"
-)
+    logging.info(f"Queued background processing for {safe_filename} (id={document_id}) for user {current_user.id}")
 
     return {
-        "message": "Document indexed successfully",
+        "message": "File uploaded successfully. Processing started in background.",
         "document_id": document_id,
-        "filename": file.filename,
-        "chunks_created": len(chunks)
+        "filename": safe_filename,
+        "file_size": file_size,
+        "status": "processing"
     }
